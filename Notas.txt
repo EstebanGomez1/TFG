@@ -1,0 +1,40 @@
+Apuntes y Notas para el desarrollo del TFG
+
+===== Anteproyecto =====
+
+- Aplicación de gestion:
+https://escuelapolitecnica.uah.es/es/estudiantes/trabajo-fin-de-grado/
+
+- Latex github:
+https://github.com/JaviMaciasG/PhD-TFM-TFG-LatexTemplate
+
+
+
+===== Practica de ejemplo =====
+
+Como comentamos este mediodía, te paso la práctica de la asignatura que imparte Luis Miguel. La idea es que veas un poco como está estructurado el dataset de KITTI y pruebes la YOLO con sus imágenes.
+Varios puntos a tener en cuenta:
+Como te comentó Santi, te recomiendo que uses el repositorio de Ultralytics en lugar del de YoloV5. 
+Si ya has conseguido poner a funcionar la librería, te puedes saltar todos los pasos de instalación en Conda.
+La idea principal es que consigas detectar los vehículos y realices una estimación de su posición, suponiendo que su centro está siempre a nivel de suelo, como se explica en la práctica. Para esto necesitarás las matrices de calibración de la cámara (Calib).
+El dataset incluye nubes de puntos de LiDAR (Velodyne), por si quieres jugar un poco con ellas en 3D y ver el error de la estimación de la cámara.
+
+- dataset: subset_kitti.zip
+
+
+===== Conda =====
+- Permite la gestion de entornos aislados, lo que mejora la compatibilidad de dependencias.
+
+--- inicializar conda
+conda activate
+conda deactivate
+
+--- Crear entornos virtuales
+conda create --name mi_entorno python=3.12
+conda activate name
+
+--- paquetes instalados en el entorno de conda
+conda list
+
+
+
