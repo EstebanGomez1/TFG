@@ -1,5 +1,14 @@
 Apuntes y Notas para el desarrollo del TFG
 
+===== GitHub =====
+
+Comandos para acceder al repo del TFG personal
+git clone https://github.com/EstebanGomez1/TFG.git
+git add .
+git commit -m "Descripción de los cambios"
+git push origin main
+
+
 ===== Anteproyecto =====
 
 - Aplicación de gestion:
