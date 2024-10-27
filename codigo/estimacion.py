@@ -136,9 +136,16 @@ for r in results:
         ]
         distancia_promedio = np.mean(distancias)
         
-        # Calcular la posición X usando el centro del bounding box
+        # Calcular la posición X usando el centro del bounding box en cada cámara y promediar
         u = (x_min + x_max) / 2
-        x_estimado = calcular_x(matrices_calibracion['P0'], u, distancia_promedio)
+        x_estimado_p0 = calcular_x(matrices_calibracion['P0'], u, distancia_promedio)
+        x_estimado_p1 = calcular_x(matrices_calibracion['P1'], u, distancia_promedio)
+        x_estimado_p2 = calcular_x(matrices_calibracion['P2'], u, distancia_promedio)
+        x_estimado_p3 = calcular_x(matrices_calibracion['P3'], u, distancia_promedio)
+
+        # Promediar las posiciones X estimadas
+        x_estimado = (x_estimado_p0 + x_estimado_p1 + x_estimado_p2 + x_estimado_p3) / 4
+
         
         # Almacenar la detección con bounding box y estimaciones
         deteccion = {
