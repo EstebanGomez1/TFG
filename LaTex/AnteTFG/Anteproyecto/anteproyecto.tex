@@ -109,48 +109,60 @@
 \section{Introducción}
 \label{sec:introduccion}
 
-\textit{En este apartado se describirá el contexto en el que se desenvolverá el
-  TFG y sus antecedentes si existen. Recuerda que en el anteproyecto
-  también se pueden poner referencias bibliográficas como \cite{moore2002}}.
+En los últimos años, la detección de objetos en tres dimensiones (3D) ha ganado un rol central en el desarrollo de vehículos autónomos, convirtiéndose en un desafío crucial para mejorar la precisión y seguridad en la conducción automatizada. La combinación de sensores LiDAR y cámaras ha permitido capturar tanto información de profundidad como de color y textura, aspectos esenciales para la interpretación completa del entorno en el que se desenvuelven los sistemas autónomos. Este Trabajo de Fin de Grado (TFG) se enfoca en la detección de objetos 3D mediante la integración de métodos de deep learning y fusion temporal aplicados a imágenes obtenidas de cámaras y datos de sensores LiDAR.
 
+El proyecto utiliza el modelo YOLO (You Only Look Once) para la detección de objetos, principalmente vehículos, en un entorno dinámico captado por un coche autónomo. Mediante el uso de PyTorch, se entrena y optimiza la estimación tridimensional de YOLO, permitiendo una comprensión espacial avanzada de los elementos presentes en el entorno de conducción. Además, para alcanzar una representación temporal coherente y precisa, se propone una fusión de datos basada en la fusion temporal de distintas secuencias de imágenes de cámara y datos LiDAR, capturadas en diferentes momentos y posiciones. Esta técnica de fusión temporal tiene como objetivo lograr una detección más robusta y confiable, especialmente en condiciones de tráfico y situaciones complejas.
+
+Para el desarrollo y la evaluación del modelo, se recurrirá a datasets ampliamente utilizados en el campo de la conducción autónoma, como KITTI. La implementación de estas técnicas permitirá obtener una detección más precisa de los objetos 3D alrededor de un vehículo, contribuyendo al desarrollo de sistemas de conducción autónoma más avanzados y seguros.
 
 \section{Objetivos}
 \label{sec:objetivos-y-campo}
 
 \textit{En este apartado se delimitan y explican con claridad los objetivos
-  generales a conseguir con el TFG y la aplicación del mismo, así como los
-  objetivos específicos en su caso. Algo del tipo:}
+	generales a conseguir con el TFG y la aplicación del mismo, así como los
+	objetivos específicos en su caso.}
 
-El objetivo fundamental de este proyecto es el diseño, implementación y
-evaluación de \ldots
+El objetivo fundamental de este proyecto es el desarrollo e implementación de un sistema de detección y estimación de objetos en 3D utilizando redes neuronales de deep learning, específicamente el modelo YOLO, en combinación con un esquema de fusión temporal de datos provenientes de sensores de cámara y LiDAR, montados en un vehículo autónomo. Este sistema busca mejorar la precisión en la detección y localización tridimensional de objetos en el entorno, en especial vehículos, contribuyendo a la eficiencia y seguridad en la conducción autónoma.
 
 Los objetivos específicos de este proyecto son los siguientes:
 
 \begin{itemize}
-\item Realizar un  \ldots
-\item Diseñar, implementar y evaluar  \ldots, siguiendo la arquitectura
-  mostrada en la figura \ref{fig_arquitectura}, y que tendrá las
-  siguientes características:
-
-  \begin{enumerate}
-  \item Característica 1 \ldots
-  \item Característica 2 \ldots
-  \item  \ldots
-  \item Característica n \ldots
-  \end{enumerate}
-
-\item Analizar  \ldots
-
-\item Documentar  \ldots
-
+	\item Estudiar la arquitectura de YOLO y su adaptación a la detección 3D:
+	\begin{enumerate}
+		\item Realizar una revisión de la arquitectura YOLO y analizar su capacidad para detectar y estimar objetos en 3D a partir de imágenes 2D.
+		\item Implementar la versión de YOLO optimizada en PyTorch para la estimación de profundidad, ajustando sus características para mejorar el reconocimiento tridimensional de objetos.
+	\end{enumerate}
+	
+	\item Diseñar e implementar un esquema de fusión temporal de datos de cámaras y LiDAR:
+	\begin{enumerate}
+		\item Desarrollar un modelo de fusión de datos que integre las estimaciones en tiempo real de los sensores de cámara y LiDAR.
+		\item Explorar técnicas de fusión temporal para mejorar la precisión y consistencia en la detección de objetos en el entorno, utilizando información recopilada en intervalos de tiempo sucesivos.
+	\end{enumerate}
+	
+	\item Entrenar y optimizar el modelo YOLO en un entorno de conducción autónoma:
+	\begin{enumerate}
+		\item Experimentar con diferentes técnicas de entrenamiento para optimizar el rendimiento del modelo en la detección y clasificación de objetos 3D, tomando en cuenta las limitaciones de la inferencia en tiempo real.
+	\end{enumerate}
+	
+	\item Evaluar el rendimiento del sistema de detección y fusión sensorial:
+	\begin{enumerate}
+		\item Medir la precisión y rapidez de detección del sistema mediante métricas de visión artificial, evaluando en condiciones de simulación y con datos de entornos reales.
+	\end{enumerate}
+	
+	\item Implementar mejoras de precisión y reducir los tiempos de inferencia del modelo:
+	\begin{enumerate}
+		\item Proponer ajustes en el modelo de YOLO y en la fusión de datos para optimizar la precisión y minimizar el tiempo de respuesta.
+		\item Desarrollar herramientas de análisis de error y realizar pruebas con datasets específicos de conducción autónoma para lograr mejoras consistentes en el rendimiento.
+	\end{enumerate}
 \end{itemize}
 
-\begin{figure}[tphb]
-  \centering
-  \includegraphics[width=3in]{Diagrama2.pdf}
-  \caption{Arquitectura del sistema completo.}
-  \label{fig_arquitectura}
+\begin{figure}[hbtp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{flujo.png}
+	\caption{Flujo del sistema de detección y estimación 3D.}
+	\label{fig:flujo_sistema}
 \end{figure}
+
 
 
 \section{Metodología y plan de trabajo}
