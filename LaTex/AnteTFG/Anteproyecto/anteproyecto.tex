@@ -62,6 +62,7 @@
 \date{\myThesisProposalDate}                         % DO NOT TOUCH THIS LINE
 \author{\myAuthorFullName}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % Let's start with the real stuff
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -109,54 +110,59 @@
 \section{Introducción}
 \label{sec:introduccion}
 
-En los últimos años, la detección de objetos en tres dimensiones (3D) ha ganado un rol central en el desarrollo de vehículos autónomos, convirtiéndose en un desafío crucial para mejorar la precisión y seguridad en la conducción automatizada. La combinación de sensores LiDAR y cámaras ha permitido capturar tanto información de profundidad como de color y textura, aspectos esenciales para la interpretación completa del entorno en el que se desenvuelven los sistemas autónomos. Este Trabajo de Fin de Grado (TFG) se enfoca en la detección de objetos 3D mediante la integración de métodos de deep learning y fusion temporal aplicados a imágenes obtenidas de cámaras y datos de sensores LiDAR.
+En los últimos años, la detección de objetos en tres dimensiones (3D) ha adquirido un papel crucial en el avance de los sistemas de conducción autónoma, representando un desafío significativo para garantizar la precisión y seguridad en la interpretación del entorno. La combinación de sensores LiDAR y cámaras permite capturar tanto información de profundidad como de color y textura, aspectos vitales para una comprensión integral del entorno en el que operan estos sistemas. Sin embargo, los métodos tradicionales que procesan datos cuadro por cuadro presentan limitaciones, como la sensibilidad al ruido, oclusiones y la dispersión de datos, lo que puede afectar la robustez y consistencia de la detección.
 
-El proyecto utiliza el modelo YOLO (You Only Look Once) para la detección de objetos, principalmente vehículos, en un entorno dinámico captado por un coche autónomo. Mediante el uso de PyTorch, se entrena y optimiza la estimación tridimensional de YOLO, permitiendo una comprensión espacial avanzada de los elementos presentes en el entorno de conducción. Además, para alcanzar una representación temporal coherente y precisa, se propone una fusión de datos basada en la fusion temporal de distintas secuencias de imágenes de cámara y datos LiDAR, capturadas en diferentes momentos y posiciones. Esta técnica de fusión temporal tiene como objetivo lograr una detección más robusta y confiable, especialmente en condiciones de tráfico y situaciones complejas.
+Este anteproyecto explora la integración de técnicas de Deep Learning con métodos de fusión temporal que emplean múltiples entradas de sensores, como cámaras y LiDAR, para mejorar la detección de objetos en 3D. Se propone la implementación de un modelo que, inspirado en la arquitectura de detección de objetos Temp-Frustum Net, fusione características de cuadros anteriores mediante un Módulo de Fusión Temporal (TFM). Este módulo permite combinar la información de diferentes instantes de tiempo para compensar las limitaciones de los modelos basados en cuadros individuales, incrementando así la robustez y precisión de la detección ante oclusiones y situaciones complejas de tráfico.
 
-Para el desarrollo y la evaluación del modelo, se recurrirá a datasets ampliamente utilizados en el campo de la conducción autónoma, como KITTI. La implementación de estas técnicas permitirá obtener una detección más precisa de los objetos 3D alrededor de un vehículo, contribuyendo al desarrollo de sistemas de conducción autónoma más avanzados y seguros.
+El desarrollo de este sistema se validará utilizando el dataset KITTI, ampliamente reconocido en la investigación de conducción autónoma, y se implementará en dispositivos NVIDIA Jetson para evaluar su viabilidad en entornos hardware de bajo consumo.
 
 \section{Objetivos}
 \label{sec:objetivos-y-campo}
 
 
-El objetivo fundamental de este proyecto es el desarrollo e implementación de un sistema de detección y estimación de objetos en 3D utilizando redes neuronales de deep learning, específicamente el modelo YOLO, en combinación con un esquema de fusión temporal de datos provenientes de sensores de cámara y LiDAR, montados en un vehículo autónomo. Este sistema busca mejorar la precisión en la detección y localización tridimensional de objetos en el entorno, en especial vehículos, contribuyendo a la eficiencia y seguridad en la conducción autónoma.
+El objetivo fundamental de este proyecto es el desarrollo e implementación de un sistema de detección y estimación de objetos en 3D con métodos de Deep Learning que combinen modelos basados en redes neuronales y técnicas de fusión temporal para datos de cámara y LiDAR, validando su desempeño tanto en entornos simulados como en condiciones reales.
 
 
 Los objetivos específicos de este proyecto son los siguientes:
 \begin{itemize}
-	\item Estudiar la arquitectura de YOLO y su adaptación a la detección 3D:
+	\item Estudio y análisis de la arquitectura YOLO y de la red propuesta en el modelo Temp-Frustum Net:
 	\begin{enumerate}
-		\item Realizar una revisión de la arquitectura YOLO y analizar su capacidad para detectar y estimar objetos en 3D a partir de imágenes 2D.
-		\item Implementar la versión de YOLO optimizada en PyTorch para la estimación de profundidad, ajustando sus características para mejorar el reconocimiento tridimensional de objetos.
+		\item Realizar una revisión exhaustiva de la arquitectura YOLO, destacando sus capacidades y limitaciones en la detección y estimación de objetos 3D a partir de imágenes 2D.
+		Analizar el funcionamiento de la arquitectura Temp-Frustum Net y sus innovaciones en la integración de características temporales mediante el Módulo de Fusión Temporal (TFM), comprendiendo su aplicación en la detección de objetos en 3D.
 	\end{enumerate}
 	
-	\item Diseñar e implementar un esquema de fusión temporal de datos de cámaras y LiDAR:
+	\item Análisis y comprensión del dataset KITTI:
 	\begin{enumerate}
-		\item Desarrollar un modelo de fusión de datos que integre las estimaciones en tiempo real de los sensores de cámara y LiDAR.
-		\item Explorar técnicas de fusión temporal para mejorar la precisión y consistencia en la detección de objetos en el entorno, utilizando información recopilada en intervalos de tiempo sucesivos.
+		\item Estudiar la estructura, características y contenido del dataset KITTI, evaluando su utilidad para entrenar y validar modelos de detección de objetos en 3D.
+		Adaptar y preparar los datos del dataset KITTI para su uso eficiente en los modelos de detección, garantizando una segmentación precisa. 
 	\end{enumerate}
 	
-	\item Entrenar y optimizar el modelo YOLO en un entorno de conducción autónoma:
+	\item Implementación y fine-tuning de la arquitectura YOLO para detección 3D:
 	\begin{enumerate}
-		\item Experimentar con diferentes técnicas de entrenamiento para optimizar el rendimiento del modelo en la detección y clasificación de objetos 3D, tomando en cuenta las limitaciones de la inferencia en tiempo real.
+		\item Implementar y adaptar la arquitectura YOLO para su entrenamiento en el dataset KITTI, ajustando sus parámetros y estructura para la estimación tridimensional de objetos.
 	\end{enumerate}
 	
-	\item Evaluar el rendimiento del sistema de detección y fusión temporal:
+	\item Desarrollo del Módulo de Fusión Temporal (TFM) y su implementación en el sistema:
 	\begin{enumerate}
-		\item Medir la precisión y rapidez de detección del sistema evaluandolo en condiciones de simulación y con datos de entornos reales.
+		\item Integrar el Módulo de Fusión Temporal (TFM) para mejorar la detección 3D mediante el uso de características temporales que provienen de cuadros sucesivos, incrementando la precisión ante oclusiones y situaciones complejas de tráfico con la fusión de datos LiDAR y de cámara.
 	\end{enumerate}
 	
-	\item Implementar mejoras de precisión y reducir los tiempos de inferencia del modelo:
+	\item Validación del sistema en el dataset KITTI:
 	\begin{enumerate}
-		\item Proponer ajustes en el modelo de YOLO y en la fusión de datos para optimizar la precisión y minimizar el tiempo de respuesta.
-		\item Desarrollar herramientas de análisis de error y realizar pruebas con datasets específicos de conducción autónoma para lograr mejoras consistentes en el rendimiento.
+		\item Entrenar y evaluar los modelos implementados utilizando el dataset KITTI, midiendo su precisión y eficiencia en la detección de vehículos, peatones y otros objetos en condiciones de tráfico diversas.
 	\end{enumerate}
+	
+	\item Optimización y mejoras del rendimiento:
+	\begin{enumerate}
+		\item Implementar estrategias de optimización para reducir los tiempos de inferencia y mejorar la precisión de detección.
+	\end{enumerate}
+	
 \end{itemize}
 
 \begin{figure}[hbtp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{flujo.png}
-	\caption{Flujo del sistema de detección y estimación 3D.}
+	\caption{Flujo del sistema propuesto.}
 	\label{fig:flujo_sistema}
 \end{figure}
 
@@ -165,46 +171,52 @@ Los objetivos específicos de este proyecto son los siguientes:
 \section{Metodología y plan de trabajo}
 \label{sec:metodologia-y-plan}
 
-\textit{Aquí se incluirá una descripción (puede ser incluso una enumeración)
-  clara de las etapas que se van a seguir, y si es posible se deberá
-  incluir un diagrama de Gantt. Por ejemplo algo del estilo a:}
-
-Estas son las fases de desarrollo que se van a seguir para la
-consecución de los objetivos del proyecto descritos en la sección~\ref{sec:objetivos-y-campo}:
+El proyecto a realizar tiene un duración aproximada de 8 meses, entre noviembre de 2024 y junio de 2025. El desarrollo se divide en fases para el cumplimiento de los objetivos del proyecto descritos en la sección~\ref{sec:objetivos-y-campo}:
 
 \begin{enumerate}
   
-\item Formación inicial (1 mes)
+\item Formación inicial y revisión del estado del arte (1 mes)
+  \begin{itemize}
+  \item Estudio de la arquitectura YOLO.
+  \item Estudio del framework para machine learning PyTorch.
+  \item Consulta bibliográfica de modelos de deteccion de objetos con deep learning y fusion temporal de datos a partir de camaras y LiDAR. 
+  \end{itemize}
+
+\item Estudio detallado de la estructura del dataset KITTI (0,5 meses)
+\begin{itemize}
+	\item Comprension de la organizacion de los datos y objetos incluidos.
+	\item Estudio de las matrices de calibración pertenecientes a las cámaras.
+	\item Estudio de las nubes de puntos LiDAR.
+\end{itemize}
+	
+
+\item Implementacion y ajuste de la arquitectura YOLO para la deteccion 3D (2 meses)
+  \begin{itemize}
+  \item Adaptacion de YOLO para la deteccion 3D.
+  \item Realizar fine-tuning para mejorar la precisión.
+  \end{itemize}
   
+
+\item Desarrollo del módulo de Fusión Temporal (TFM) y su integración en el sistema (2 meses):
   \begin{itemize}
-  \item Formación en \ldots
-  \item Consulta de la API \ldots
-  \item Consulta bibliográfica \ldots
-  \item Profundización en herramientas de soporte \ldots
-  \item  \ldots
+  \item Integrar técnicas de fusión temporal para aprovechar multiples cuadros de datos.
   \end{itemize}
 
-\item Diseño del entorno \ldots (0,5 meses)
+\item Evaluación y validación del sistema en el dataset KITTI (1 mes)
+	\begin{itemize}
+		\item Pruebas de validación y analisis de métricas.
+	\end{itemize}
 
-\item Diseño, implementación y evaluación del  \ldots (2 meses)
-  \begin{itemize}
-  \item Definición del  \ldots
-  \item Implementación del  \ldots
-  \item Evaluación del  \ldots
-  \end{itemize}
-  
-\item Implementación y evaluación de  \ldots (1 mes)
+\item Optimización y mejora del rendimiento (0,5 meses)
+	\begin{itemize}
+		\item Aplicación de técnicas de optimización.
+	\end{itemize}
 
-\item Diseño, implementación y evaluación del módulo  \ldots (1 mes):
-  \begin{itemize}
-  \item Definición de  \ldots
-  \item Definición de  \ldots
-  \item Implementación y evaluación  \ldots
-  \end{itemize}
-
-\item Integración y  \ldots (1 mes)
-
-\item Documentación  \ldots (0,5 meses)
+\item Documentación y escritura del informe final (1 mes)
+	\begin{itemize}
+		\item Documentar el proceso, estudios y resultados.
+		\item Redacción de la memoria final y presentación de resultados.
+	\end{itemize}
 
 \end{enumerate}
 
@@ -212,36 +224,27 @@ consecución de los objetivos del proyecto descritos en la sección~\ref{sec:obj
 \section{Medios}
 \label{sec:medios}
 
-\textit{Aquí se describen de los medios necesarios para realizar el TFG. Por
-  ejemplo:}
-
-Las herramientas que van a ser necesarias para desarrollar este proyecto
+Las herramientas necesarias para desarrollar este proyecto de forma correcta
 son las siguientes:
-
 \begin{itemize}
-\item PC compatible
-\item Sensor  \ldots
-\item Sistema operativo GNU/Linux~\cite{gnulinux}
-\item Entorno de desarrollo Emacs/Vim~\cite{emacs}
-\item Procesador de textos \LaTeX~\cite{lamport94}
-\item Control de versiones CVS~\cite{cvs}
-\item Compilador C/C++ gcc~\cite{gcc}
-\item Gestor de compilaciones make~\cite{make}
-\item Robot con movilidad.
-\item  \ldots
+
+\item Componentes Hardware:
+	\begin{itemize}
+	\item PC con memoria RAM de 32 GB y tarjeta grafica NVIDIA RTX 3060.
+	\item Sensores LiDAR y cámaras de alta resolución.
+	\end{itemize}
+
+\item Componentes Software:
+	\begin{itemize}
+	\item Sistema operativo Ubuntu 22.04 LTS.
+	\item Lenguaje de programación Python.
+	\item Frameworks de Deep Learning: PyTorch
+	\item Procesador de textos \LaTeX~\cite para la documentación del proyecto.
+	\item Herramientas de control de versiones Git.
+	\item Acceso a datasets como KITTI o nuScenes.
+	\end{itemize}
+
 \end{itemize}
-
-
-
-Otros recursos necesarios para la elaboración del proyecto son:
-
-\begin{itemize}
-\item Herramientas  \ldots
-\item Sistema de desarrollo  \ldots
-\item  \ldots
-\end{itemize}
-
-
 
 
 % 
@@ -258,8 +261,42 @@ Otros recursos necesarios para la elaboración del proyecto son:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % Bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\input{../Book/biblio/bibliography.tex}               % EDIT this file if required
 
+\begin{thebibliography}{99}
+	\bibitem{ercelik2021tempfrustum}
+	E. Ercelik, E. Yurtsever, y A. Knoll,
+	\textit{Temp-Frustum Net: 3D Object Detection with Temporal Fusion},
+	en \textit{2021 IEEE Intelligent Vehicles Symposium (IV)}, Nagoya, Japón, 2021, pp. 1095-1101.
+	
+	\bibitem{geiger2013kitti}
+	A. Geiger, P. Lenz, C. Stiller, y R. Urtasun,
+	``Vision meets Robotics: The KITTI Dataset'',
+	\textit{International Journal of Robotics Research (IJRR)}, 2013.
+	
+	\bibitem{paszke2019pytorch}
+	A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga, A. Desmaison, A. Kopf, E. Yang, Z. DeVito, M. Raison, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang, J. Bai, y S. Chintala,
+	\textit{PyTorch: An Imperative Style, High-Performance Deep Learning Library},
+	preprint, arXiv:1912.01703, 2019. Disponible en: \url{https://arxiv.org/abs/1912.01703}.
+	
+	\bibitem{redmon2016yolo}
+	J. Redmon, S. Divvala, R. Girshick, y A. Farhadi,
+	\textit{You Only Look Once: Unified, Real-Time Object Detection},
+	preprint, arXiv:1506.02640, 2015. Disponible en: \url{https://arxiv.org/abs/1506.02640}.
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+\end{thebibliography}
+
+\input{../Book/biblio/bibliography.tex}               % EDIT this file if required
 
 
 \end{document}
