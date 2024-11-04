@@ -125,7 +125,7 @@ El objetivo fundamental de este proyecto es el desarrollo e implementación de u
 
 Los objetivos específicos de este proyecto son los siguientes:
 \begin{itemize}
-	\item Estudio y análisis de la arquitectura YOLO y de la red propuesta en el modelo Temp-Frustum Net:
+	\item Estudio y análisis de la arquitectura YOLO \cite{yolo} y de la red propuesta en el modelo Temp-Frustum Net \cite{frustum}:
 	\begin{enumerate}
 		\item Realizar una revisión exhaustiva de la arquitectura YOLO, destacando sus capacidades y limitaciones en la detección y estimación de objetos 3D a partir de imágenes 2D.
 		Analizar el funcionamiento de la arquitectura Temp-Frustum Net y sus innovaciones en la integración de características temporales mediante el Módulo de Fusión Temporal (TFM), comprendiendo su aplicación en la detección de objetos en 3D.
@@ -133,7 +133,7 @@ Los objetivos específicos de este proyecto son los siguientes:
 	
 	\item Análisis y comprensión del dataset KITTI:
 	\begin{enumerate}
-		\item Estudiar la estructura, características y contenido del dataset KITTI, evaluando su utilidad para entrenar y validar modelos de detección de objetos en 3D.
+		\item Estudiar la estructura, características y contenido del dataset KITTI \cite{kitti}, evaluando su utilidad para entrenar y validar modelos de detección de objetos en 3D.
 		Adaptar y preparar los datos del dataset KITTI para su uso eficiente en los modelos de detección, garantizando una segmentación precisa. 
 	\end{enumerate}
 	
@@ -152,16 +152,17 @@ Los objetivos específicos de este proyecto son los siguientes:
 		\item Entrenar y evaluar los modelos implementados utilizando el dataset KITTI, midiendo su precisión y eficiencia en la detección de vehículos, peatones y otros objetos en condiciones de tráfico diversas.
 	\end{enumerate}
 	
-	\item Optimización y mejoras del rendimiento:
+	\item Optimización, mejoras del rendimiento y despliegue:
 	\begin{enumerate}
 		\item Implementar estrategias de optimización para reducir los tiempos de inferencia y mejorar la precisión de detección.
+		\item Despliegue en el dispositivo NVIDIA Jetson.
 	\end{enumerate}
 	
 \end{itemize}
 
 \begin{figure}[hbtp]
 	\centering
-	\includegraphics[width=0.6\textwidth]{flujo.png}
+	\includegraphics[width=0.9\textwidth]{flujo.png}
 	\caption{Flujo del sistema propuesto.}
 	\label{fig:flujo_sistema}
 \end{figure}
@@ -210,6 +211,7 @@ El proyecto a realizar tiene un duración aproximada de 8 meses, entre noviembre
 \item Optimización y mejora del rendimiento (0,5 meses)
 	\begin{itemize}
 		\item Aplicación de técnicas de optimización.
+		\item Despliegue en el dispositivo NVIDIA Jetson.
 	\end{itemize}
 
 \item Documentación y escritura del informe final (1 mes)
@@ -232,16 +234,17 @@ son las siguientes:
 	\begin{itemize}
 	\item PC con memoria RAM de 32 GB y tarjeta grafica NVIDIA RTX 3060.
 	\item Sensores LiDAR y cámaras de alta resolución.
+	\item Dispositivo NVIDIA Jetson.
 	\end{itemize}
 
 \item Componentes Software:
 	\begin{itemize}
 	\item Sistema operativo Ubuntu 22.04 LTS.
-	\item Lenguaje de programación Python.
-	\item Frameworks de Deep Learning: PyTorch
+	\item Lenguaje de programación Python. 
+	\item Frameworks de Deep Learning: PyTorch \cite{pytorch}
 	\item Procesador de textos \LaTeX~\cite para la documentación del proyecto.
 	\item Herramientas de control de versiones Git.
-	\item Acceso a datasets como KITTI o nuScenes.
+	\item Acceso a datasets como KITTI.
 	\end{itemize}
 
 \end{itemize}
@@ -261,41 +264,6 @@ son las siguientes:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % Bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-
-\begin{thebibliography}{99}
-	\bibitem{ercelik2021tempfrustum}
-	E. Ercelik, E. Yurtsever, y A. Knoll,
-	\textit{Temp-Frustum Net: 3D Object Detection with Temporal Fusion},
-	en \textit{2021 IEEE Intelligent Vehicles Symposium (IV)}, Nagoya, Japón, 2021, pp. 1095-1101.
-	
-	\bibitem{geiger2013kitti}
-	A. Geiger, P. Lenz, C. Stiller, y R. Urtasun,
-	``Vision meets Robotics: The KITTI Dataset'',
-	\textit{International Journal of Robotics Research (IJRR)}, 2013.
-	
-	\bibitem{paszke2019pytorch}
-	A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga, A. Desmaison, A. Kopf, E. Yang, Z. DeVito, M. Raison, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang, J. Bai, y S. Chintala,
-	\textit{PyTorch: An Imperative Style, High-Performance Deep Learning Library},
-	preprint, arXiv:1912.01703, 2019. Disponible en: \url{https://arxiv.org/abs/1912.01703}.
-	
-	\bibitem{redmon2016yolo}
-	J. Redmon, S. Divvala, R. Girshick, y A. Farhadi,
-	\textit{You Only Look Once: Unified, Real-Time Object Detection},
-	preprint, arXiv:1506.02640, 2015. Disponible en: \url{https://arxiv.org/abs/1506.02640}.
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-\end{thebibliography}
-
 \input{../Book/biblio/bibliography.tex}               % EDIT this file if required
 
 
