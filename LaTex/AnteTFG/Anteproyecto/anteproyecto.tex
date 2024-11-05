@@ -110,11 +110,11 @@
 \section{Introducción}
 \label{sec:introduccion}
 
-En los últimos años, la detección de objetos en tres dimensiones (3D) ha adquirido un papel crucial en el avance de los sistemas de conducción autónoma, representando un desafío significativo para garantizar la precisión y seguridad en la interpretación del entorno. La combinación de sensores LiDAR y cámaras permite capturar tanto información de profundidad como de color y textura, aspectos vitales para una comprensión integral del entorno en el que operan estos sistemas. Sin embargo, los métodos tradicionales que procesan datos cuadro por cuadro presentan limitaciones, como la sensibilidad al ruido, oclusiones y la dispersión de datos, lo que puede afectar la robustez y consistencia de la detección.
+En los últimos años, la detección de objetos en tres dimensiones (3D) ha adquirido un papel crucial en el avance de los sistemas de conducción autónoma, representando un desafío significativo para garantizar la precisión y seguridad en la interpretación del entorno. La combinación de sensores LiDAR y cámaras permite capturar tanto información de profundidad como de color y textura, aspectos vitales para una comprensión integral del entorno en el que operan estos sistemas. Sin embargo, los métodos tradicionales que procesan datos imagen a imagen presentan limitaciones, como la sensibilidad al ruido, oclusiones y la dispersión de datos, lo que puede afectar la robustez y consistencia de la detección.
 
-Este anteproyecto explora la integración de técnicas de Deep Learning con métodos de fusión temporal que emplean múltiples entradas de sensores, como cámaras y LiDAR, para mejorar la detección de objetos en 3D. Se propone la implementación de un modelo que, inspirado en la arquitectura de detección de objetos Temp-Frustum Net, fusione características de cuadros anteriores mediante un Módulo de Fusión Temporal (TFM). Este módulo permite combinar la información de diferentes instantes de tiempo para compensar las limitaciones de los modelos basados en cuadros individuales, incrementando así la robustez y precisión de la detección ante oclusiones y situaciones complejas de tráfico.
+Este proyecto explora la integración de técnicas de Deep Learning con métodos de fusión temporal que emplean múltiples entradas de sensores, como cámaras y LiDAR, para mejorar la detección de objetos en 3D. Se propone la implementación de un modelo que, inspirado en la arquitectura de detección de objetos Temp-Frustum Net, fusione características de cuadros anteriores mediante un Módulo de Fusión Temporal (TFM) \cite{frustum}. Este módulo permite combinar la información de diferentes instantes de tiempo para compensar las limitaciones de los modelos basados en imágenes individuales, incrementando así la robustez y precisión de la detección ante oclusiones y situaciones complejas de tráfico.
 
-El desarrollo de este sistema se validará utilizando el dataset KITTI, ampliamente reconocido en la investigación de conducción autónoma, y se implementará en dispositivos NVIDIA Jetson para evaluar su viabilidad en entornos hardware de bajo consumo.
+El desarrollo de este sistema se validará utilizando el dataset KITTI \cite{kitti}, ampliamente reconocido en la investigación de conducción autónoma, y se implementará en dispositivos NVIDIA Jetson para evaluar su viabilidad en entornos hardware de bajo coste y consumo.
 
 \section{Objetivos}
 \label{sec:objetivos-y-campo}
@@ -137,14 +137,15 @@ Los objetivos específicos de este proyecto son los siguientes:
 		Adaptar y preparar los datos del dataset KITTI para su uso eficiente en los modelos de detección, garantizando una segmentación precisa. 
 	\end{enumerate}
 	
-	\item Implementación y fine-tuning de la arquitectura YOLO para detección 3D:
+	\item Implementación y fine-tuning de la arquitectura YOLO para detección 2D:
 	\begin{enumerate}
-		\item Implementar y adaptar la arquitectura YOLO para su entrenamiento en el dataset KITTI, ajustando sus parámetros y estructura para la estimación tridimensional de objetos.
+		\item Adaptar la arquitectura YOLO para su entrenamiento en el dataset KITTI, ajustando sus parámetros y estructura para la estimación tridimensional de objetos.
 	\end{enumerate}
 	
 	\item Desarrollo del Módulo de Fusión Temporal (TFM) y su implementación en el sistema:
 	\begin{enumerate}
-		\item Integrar el Módulo de Fusión Temporal (TFM) para mejorar la detección 3D mediante el uso de características temporales que provienen de cuadros sucesivos, incrementando la precisión ante oclusiones y situaciones complejas de tráfico con la fusión de datos LiDAR y de cámara.
+		\item A prtir de las detecciones 2D, cortar las regiones de interés en la nube de puntos LiDAR para obtener la entrada del módulo de detección 3D con múltiples marcas temporales (TFM).
+		\item Integrar el Módulo de Fusión Temporal (TFM) \cite{frustum} para mejorar la detección 3D mediante el uso de características temporales que provienen de cuadros sucesivos, incrementando la precisión ante oclusiones y situaciones complejas de tráfico con la fusión de datos LiDAR y de cámara.
 	\end{enumerate}
 	
 	\item Validación del sistema en el dataset KITTI:
@@ -155,7 +156,7 @@ Los objetivos específicos de este proyecto son los siguientes:
 	\item Optimización, mejoras del rendimiento y despliegue:
 	\begin{enumerate}
 		\item Implementar estrategias de optimización para reducir los tiempos de inferencia y mejorar la precisión de detección.
-		\item Despliegue en el dispositivo NVIDIA Jetson.
+		\item Despliegue y validación en el dispositivo NVIDIA Jetson.
 	\end{enumerate}
 	
 \end{itemize}
@@ -178,8 +179,8 @@ El proyecto a realizar tiene un duración aproximada de 8 meses, entre noviembre
   
 \item Formación inicial y revisión del estado del arte (1 mes)
   \begin{itemize}
-  \item Estudio de la arquitectura YOLO.
-  \item Estudio del framework para machine learning PyTorch.
+  \item Estudio de la arquitectura YOLO \cite{yolo}.
+  \item Estudio del framework para machine learning PyTorch \cite{pytorch}.
   \item Consulta bibliográfica de modelos de deteccion de objetos con deep learning y fusion temporal de datos a partir de camaras y LiDAR. 
   \end{itemize}
 
@@ -191,16 +192,16 @@ El proyecto a realizar tiene un duración aproximada de 8 meses, entre noviembre
 \end{itemize}
 	
 
-\item Implementacion y ajuste de la arquitectura YOLO para la deteccion 3D (2 meses)
+\item Adaptación de la arquitectura YOLO (1.5 meses)
   \begin{itemize}
-  \item Adaptacion de YOLO para la deteccion 3D.
+  \item Ajustes y entrenamiento de YOLO.
   \item Realizar fine-tuning para mejorar la precisión.
   \end{itemize}
   
 
 \item Desarrollo del módulo de Fusión Temporal (TFM) y su integración en el sistema (2 meses):
   \begin{itemize}
-  \item Integrar técnicas de fusión temporal para aprovechar multiples cuadros de datos.
+  \item Integrar técnicas de fusión temporal y detección 3D a partir de múltiples frames.
   \end{itemize}
 
 \item Evaluación y validación del sistema en el dataset KITTI (1 mes)
@@ -208,7 +209,7 @@ El proyecto a realizar tiene un duración aproximada de 8 meses, entre noviembre
 		\item Pruebas de validación y analisis de métricas.
 	\end{itemize}
 
-\item Optimización y mejora del rendimiento (0,5 meses)
+\item Optimización y mejora del rendimiento (1 mes)
 	\begin{itemize}
 		\item Aplicación de técnicas de optimización.
 		\item Despliegue en el dispositivo NVIDIA Jetson.
@@ -244,7 +245,7 @@ son las siguientes:
 	\item Frameworks de Deep Learning: PyTorch \cite{pytorch}
 	\item Procesador de textos \LaTeX~\cite para la documentación del proyecto.
 	\item Herramientas de control de versiones Git.
-	\item Acceso a datasets como KITTI.
+	\item Acceso a datasets como KITTI \cite{kitti}.
 	\end{itemize}
 
 \end{itemize}
