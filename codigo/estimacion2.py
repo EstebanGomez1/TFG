@@ -30,7 +30,7 @@ def proyectar_punto_3d_a_2d(punto_3d, P2, R0_rect, Tr_velo_to_cam):
     v /= w
     return u, v
 
-def filtrar_outliers(puntos, threshold=1.5):
+def filtrar_outliers(puntos, threshold=1):
     # Calcula la media y la desviación estándar
     media = np.mean(puntos, axis=0)
     desviacion_std = np.std(puntos, axis=0)
@@ -61,9 +61,9 @@ def encontrar_centro_bounding_box(puntos_lidar, bounding_box, P2, R0_rect, Tr_ve
     return None
 
 # Rutas de los archivos
-ruta_imagen = '/home/esteban/universidad/curso/datasets/subset_kitti/image_2/000000.png'
-ruta_lidar = '/home/esteban/universidad/curso/datasets/subset_kitti/velodyne/000000.bin'
-ruta_calibracion = '/home/esteban/universidad/curso/datasets/subset_kitti/calib/000000.txt'
+ruta_imagen = '/home/esteban/universidad/curso/datasets/subset_kitti/image_2/000019.png'
+ruta_lidar = '/home/esteban/universidad/curso/datasets/subset_kitti/velodyne/000019.bin'
+ruta_calibracion = '/home/esteban/universidad/curso/datasets/subset_kitti/calib/000019.txt'
 
 # Cargar la imagen
 imagen = cv2.imread(ruta_imagen)
