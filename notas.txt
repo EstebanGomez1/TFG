@@ -1,0 +1,152 @@
+Apuntes y Notas para el desarrollo del TFG
+
+===== GitHub =====
+
+Comandos para acceder al repo del TFG personal
+git clone https://github.com/EstebanGomez1/TFG.git
+git add .
+git commit -m "Descripción de los cambios"
+git push origin main
+
+
+
+===== Anteproyecto =====
+
+
+- Latex github plantilla:
+https://github.com/JaviMaciasG/PhD-TFM-TFG-LatexTemplate
+
+
+
+===== Practica de ejemplo =====
+
+Como comentamos este mediodía, te paso la práctica de la asignatura que imparte Luis Miguel. La idea es que veas un poco como está estructurado el dataset de KITTI y pruebes la YOLO con sus imágenes.
+Varios puntos a tener en cuenta:
+Como te comentó Santi, te recomiendo que uses el repositorio de Ultralytics en lugar del de YoloV5. 
+Si ya has conseguido poner a funcionar la librería, te puedes saltar todos los pasos de instalación en Conda.
+La idea principal es que consigas detectar los vehículos y realices una estimación de su posición, suponiendo que su centro está siempre a nivel de suelo, como se explica en la práctica. Para esto necesitarás las matrices de calibración de la cámara (Calib).
+El dataset incluye nubes de puntos de LiDAR (Velodyne), por si quieres jugar un poco con ellas en 3D y ver el error de la estimación de la cámara.
+
+- dataset: subset_kitti.zip
+
+
+===== Conda =====
+- Permite la gestion de entornos aislados, lo que mejora la compatibilidad de dependencias.
+
+--- inicializar conda
+conda activate
+conda deactivate
+
+--- Crear entornos virtuales
+conda create --name mi_entorno python=3.12
+conda activate name
+
+--- paquetes instalados en el entorno de conda
+conda list
+
+
+===== LiDAR =====
+LiDAR genera nubes de puntos capturando información de la distancia de miles o millones de puntos en un área, lo que permite crear representaciones tridimensionales detalladas.
+
+===== Nube de puntos =====
+olección de puntos que representan la superficie de un objeto o una escena en 3D. Cada punto de la nube tiene coordenadas X, Y y Z, que determinan su posición en el espacio. Estos puntos son generados, entre otras formas, a partir de tecnologías como LiDAR.
+
+
+===== Matrices de Calibracion =====
+P0 y P1 son matrices de proyección 3x4 que corresponden a las cámaras izquierda (P0) y derecha (P1). Estas matrices proyectan puntos en 3D desde el espacio de la cámara a las coordenadas 2D en la imagen.
+ - fx, fy: son las distancias focales en los ejes de cada cámara.
+ - u0, v0: representan el centro óptico en la imagen.
+ - Tx, Ty, Tz: representan los desplazamientos o traslaciones de la cámara en el sistema.
+
+La matriz R0_rect es una matriz de rotación 3x3 que permite alinear las imágenes de las cámaras para que los objetos en la misma posición 3D tengan la misma posición en ambas imágenes. Esto corrige las distorsiones y pequeñas variaciones en la orientación de las cámaras y facilita la correspondencia de puntos en las dos vistas.
+
+La matriz Tr_velo_to_cam es una matriz de transformación 3x4 que convierte las coordenadas 3D del LIDAR (sensor de rango y luz) al sistema de referencia de la cámara. Esta matriz incluye rotación y traslación que alinean los datos de LIDAR con la perspectiva de la cámara.
+
+Tr_imu_to_velo es otra matriz de transformación que convierte las coordenadas del sistema de referencia de la Unidad de Medición Inercial (IMU) al sistema de referencia del LIDAR. Esto permite integrar los datos de orientación y aceleración de la IMU con el sistema LIDAR para mejorar la precisión de la ubicación y orientación en 3D.
+
+===== Nomenclaruta =====
+
+- Distancia focal: 
+
+===== Funcionamiento del codigo =====
+
+1. Lectura de la imagen
+2. Lectura de la matriz de calibracion
+3. Deteccion de YOLO
+4. Determinar clase del objeto con YOLO y asignar altura_real
+5. Calcular estimaciones promedio (depende de cuantas camaras):
+	5.1. altura_px = y_max - y_min
+	5.2. dist_objeto / altura_real = distancia_focal_y / altura_px
+	5.3. despl_real / dist_objeto = despl_pixeles / distancia_focal_x
+6. Conversiones
+	x = desplazamiento_real ( desplazamiento horizontal )
+	y = altura_imagen_real
+	z = distancia_objeto
+	
+
+===== Puntos clave del codigo =====
+
+x = eje x es el desplazamiento lateral del objeto de acuerdo al centro
+
+y = eje y es el desplazamiento horizontal del objeto de acuerdo al centro
+
+z = eje z es la distancia de los objetos a la camara
+
+# Función para calcular la distancia usando una matriz de calibración específica
+
+	distancia = altura_real*distancia_focal_y / altura_px
+
+# Calcular la distancia usando las matrices de calibración y obtener promedio
+
+	obtenemos el promedio de las distancias a la camara en base a las 
+	focales de las 4 camaras.
+
+# Calcular la posición X usando el centro del bounding box
+        u = (x_min + x_max) / 2
+        obtenemos asi el centro del bounding box en el eje x
+
+# Función para calcular la posición X usando el centro del bounding box
+	u0 = centro optico de la camara ( nos indica cuantos pixeles esta desplazado el objeto.
+	x_estimado_ = ((u - u0) * distancia_objeto) / distancia_focal_x
+
+	x_estimado_final = promedio de todas las estimaciones.
+	
+	
+
+==== Recogida de datos ====
+-- Imagenes
+ 1. Transformacion de las imagenes a tensores
+ 	transformaciones = transforms.Compose([
+	    transforms.Resize((224, 224)),  # Redimensionar las imágenes a 224x224
+	    transforms.ToTensor(),  # Convertir la imagen en un tensor
+	    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) 
+	])
+ 2. Cargar imagenes y transformarlas creando un array de tensores
+ 3. Crear un unico tensor apilando las imagenes
+ 
+ -- LiDAR
+  1. Leer archivo .bin
+  	puntos = np.fromfile(ruta_archivo, dtype=np.float32).reshape(-1, 4)  # (X, Y, Z, Intensity)
+    return puntos[:, :3]  # Solo usamos X, Y, Z
+  2. Convertir a tensor
+  	tensor_puntos = torch.tensor(puntos, dtype=torch.float32)
+  3. Crear array con los tensores
+ 
+==== 2d -> 3d ====
+
+Este proceso se realiza sobre las imagenes del dataset.
+1. Leemos la matriz de calibracion de la camara P2
+2. Funcion para estimar la posicion 3d con los limites del bounding box y la altura de la camara
+3. aplicar transformacion matematica
+
+
+==== 3d -> 2d ====
+
+1. Leemos p2, r0_rect(alinear puntos con la camara) y tr_velo_to_cam(convierte un punto del sistema LiDAR al sistema de coordenadas de la cámara)
+2. Proyectamos de 3d a 2d con la transformacion matematica
+3. Con YOLO encontramos las cajas de los objetos
+4. Encontrar los centros del bounding box
+5. Filtrar outliers
+	|punto-media| <= threshold*desviacion	#thresdhold es cuantas veces sobre la desviacion estandar se permite que el punto sea
+	Rango:
+		media +/- threshold*desviacion
