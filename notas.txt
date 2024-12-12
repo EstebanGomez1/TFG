@@ -150,3 +150,14 @@ Este proceso se realiza sobre las imagenes del dataset.
 	|punto-media| <= threshold*desviacion	#thresdhold es cuantas veces sobre la desviacion estandar se permite que el punto sea
 	Rango:
 		media +/- threshold*desviacion
+		
+		
+======================================
+Recorte de nube de puntos y diccionario con labels x,y,z reales
+======================================
+
+
+
+
+
+
