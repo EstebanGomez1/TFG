@@ -156,6 +156,104 @@ Este proceso se realiza sobre las imagenes del dataset.
 Recorte de nube de puntos y diccionario con labels x,y,z reales
 ======================================
 
+Para añadir en el diccionario las nubes de puntos tenemos que seleccionar objetos detectados con su label.
+- umbral de 10 metros cerca o lejos del label mas proximo.
+
+==================
+sistemas de referencia del diccionario
+
+etiquetas:
+estan en el sistema de referencia de la camara
+x = izquierda(-) o derecha(+) de la camara
+y = altura 
+z = distancia al objeto
+
+Puntos:
+sistema LiDAR
+x = distancia al objeto
+y = izquierda(-) o derecha(+)
+z = altura
+
+## Tareas
+- Load de datos (hecho)
+- Usar collate_fn
+para agrupaciones que forman un batch (lote)
+- descargar kitti tracking (hecho)
+- relacionar secuencias de imagenes
+- nueva estructura pkl para secuencias
+
+## PKL para secuencias
+
+un nodo que tenga como hijos todas las secuencias relacionadas 
+
+## relacion de secuencias de imagenes
+
+# MODIFICAR DISTANCIA EUCLIDEA
+
+cambiar por distancia en cada eje
+
+# secuencias:
+1. asignar objetos a los labels de kitti disponibles
+2. eliminar los duplicados usando la distancia euclidea
+3. relacionarlos en un diccionario donde la clave (objeto actual) tiene como valor (objeto siguiente)
+
+#--- Reunion 29 miercoles
+intersection over union
+devuelve 1 cuando la interseccion es justa entre las cajas y 0 cuando no hay relacion.
+
+De formaa optimaa en vez de heuristica:
+Algoritmo hungaro para asociar los elemntos paares optimos en la intersecciontion over unit
+
+scipy linear sum= linear_sum_assignment
+
+Diccionario ?
+
+secuencias de 3 en 3
+
+#reunion 10 febrero
+ventana deslizante de 3 en 3
+usar: 
+zip(x, x[1:], x[2:] o parecido
+
+la Bbox resultante es del dos.
+
+filtar y quitar las bicis en yolo.
+
+# reunion 24 febrero
+resnet50
+efficientNet
+ResNet18
+
+#### Activar conda
+
+conda activate pointcept
+
+nvidia docker el toolkit y el configuring docker.
+
+
+docker:
+
+sudo docker run --rm --gpus all --privileged -v /dev:/dev nvidia/cuda:12.0.0-base-ubuntu20.04 nvidia-smi
+
+secuencia:
+sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+sudo reboot
+sudo apt install nvidia-driver-535
+nvidia-smi
+sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+sudo systemctl restart docker
+sudo nvidia-ctk runtime configure --runtime=docker
+nvidia-container-cli -V
+sudo apt-get install -y nvidia-container-toolkit
+sudo apt-get update
+
+DOCKER
+
+sudo docker run --rm --runtime=nvidia --gpus all -it pointtransformer-image
+
+### Para crear la carpeta compartida
+
+
 
 
 
