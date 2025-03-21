@@ -1,0 +1,6 @@
+lightning
+opencv-python
+torchinfo
+imageio
+segmentation_models_pytorch
+spconv-cu120
