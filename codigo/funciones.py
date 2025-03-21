@@ -7,6 +7,8 @@ import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
 from scipy.spatial.distance import euclidean
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from matplotlib import cm
 
 
 #####################
@@ -107,7 +109,7 @@ def encontrar_centro_bounding_box_y_nube(puntos_lidar, bounding_box, P2, R0_rect
             puntos_filtrados = filtrar_puntos_por_distancia(puntos_lidar,centro_3d, threshold)
             return centro_3d, puntos_filtrados
     print("No se encontraron puntos LiDAR significativos dentro del bounding box.")
-    return None
+    return None, None
 
 
 def encontrar_centro_bounding_box_y_nube1(puntos_lidar, bounding_box, P2, R0_rect, Tr_velo_to_cam, threshold=3):
@@ -248,6 +250,80 @@ def mostrar_imagen(imagen):
     plt.axis("off")
     plt.show()
 
+def dibujar_caja(diccionario_label, puntos_lidar):
+    """
+    Dibuja una caja 3D alrededor de un objeto basado en el diccionario de etiquetas de KITTI.
+    
+    Parámetros:
+        diccionario_label (dict): Diccionario con los datos del objeto (clase, centro, dimensiones, rotación).
+        puntos_lidar (array): Nube de puntos LiDAR para la visualización.
+    """
+
+    
+    # Extraer los datos del objeto
+    tipo = diccionario_label['class']
+    x, y, z = diccionario_label['z'], (-1)*diccionario_label['x'], ((-1/2)*diccionario_label['y'])
+    length, height, width = diccionario_label['length'], (-1)*diccionario_label['width'], diccionario_label['height']
+    rot_y = diccionario_label['rot_y']
+    # 'width' 'length' 'height'
+    # Definir los 8 vértices de la caja 3D sin rotación (en el sistema de coordenadas local)
+    vertices = np.array([
+        [length / 2, width / 2, height / 2],
+        [-length / 2, width / 2, height / 2],
+        [-length / 2, -width / 2, height / 2],
+        [length / 2, -width / 2, height / 2],
+        [length / 2, width / 2, -height / 2],
+        [-length / 2, width / 2, -height / 2],
+        [-length / 2, -width / 2, -height / 2],
+        [length / 2, -width / 2, -height / 2]
+    ])
+    
+    # Matriz de rotación alrededor del eje Y
+    R = np.array([
+        [np.cos(rot_y), 0, np.sin(rot_y)],
+        [0, 1, 0],
+        [-np.sin(rot_y), 0, np.cos(rot_y)]
+    ])
+    
+    # Aplicar la rotación a los vértices
+    vertices_rotados = vertices.dot(R.T)
+    
+    # Trasladar los vértices a la posición del objeto (x, y, z)
+    vertices_rotados[:, 0] += x
+    vertices_rotados[:, 1] += y
+    vertices_rotados[:, 2] += z
+    
+    # Definir las caras de la caja (conexiones entre los vértices)
+    caras = [
+        [vertices_rotados[0], vertices_rotados[1], vertices_rotados[2], vertices_rotados[3]],
+        [vertices_rotados[4], vertices_rotados[5], vertices_rotados[6], vertices_rotados[7]],
+        [vertices_rotados[0], vertices_rotados[1], vertices_rotados[5], vertices_rotados[4]],
+        [vertices_rotados[1], vertices_rotados[2], vertices_rotados[6], vertices_rotados[5]],
+        [vertices_rotados[2], vertices_rotados[3], vertices_rotados[7], vertices_rotados[6]],
+        [vertices_rotados[3], vertices_rotados[0], vertices_rotados[4], vertices_rotados[7]]
+    ]
+    
+    # Crear la visualización 3D
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # Dibujar la nube de puntos LiDAR
+    ax.scatter(puntos_lidar[:, 0], puntos_lidar[:, 1], puntos_lidar[:, 2], c='blue', s=0.1)
+
+    # Dibujar la caja 3D
+    ax.add_collection3d(Poly3DCollection(caras, facecolors='lightgray', linewidths=1, edgecolors='r', alpha=0.1))
+    
+    # Establecer límites y etiquetas
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title(f'Objeto: {tipo}')
+    
+    plt.show()
+
+
+
+
 
 #####################
 
@@ -386,7 +462,7 @@ def cluster_mas_cercano(puntos, centro_bb, eps=0.5, min_samples=5):
 
 #####################
 
-def inferencia(imagen, idImagen, ruta_label, ruta_lidar, ruta_diccionario, ruta_calibracion):
+def inferencia(imagen, idImagen, ruta_label, ruta_lidar, diccionario, ruta_calibracion, info=0):
     
     # Cargar el modelo YOLOv8
     model = YOLO('yolov8n.pt')
@@ -399,21 +475,14 @@ def inferencia(imagen, idImagen, ruta_label, ruta_lidar, ruta_diccionario, ruta_
     if imagen is None:
         print("Error: no se pudo cargar la imagen. Verifica la ruta del archivo.")
     else:
+        print(f"\n Procesando imagen: {idImagen}")
         # Detectar objetos en la imagen
         results = model.predict(imagen)
 
         # Leer los puntos LiDAR del archivo
         puntos_lidar = leer_puntos_lidar(ruta_lidar)
 
-        # Cargar el diccionario desde el archivo .pickle
-        try:
-            with open(ruta_diccionario, 'rb') as file:
-                diccionario = pickle.load(file)
-            print("Diccionario cargado exitosamente.")
-        except FileNotFoundError:
-            # Si el archivo no existe, se crea un diccionario vacío
-            diccionario = {}
-            print("No se encontró el archivo, se creará un diccionario vacío.")
+        
 
         # Leer las matrices de calibración
         P2, R0_rect, Tr_velo_to_cam = leer_matrices_calibracion(ruta_calibracion)
@@ -427,10 +496,15 @@ def inferencia(imagen, idImagen, ruta_label, ruta_lidar, ruta_diccionario, ruta_
                 x_min, y_min, x_max, y_max = box.xyxy[0].cpu().numpy()
 
                 # Estimar el centro 3D del bounding box usando los puntos LiDAR
+     
                 centro_3d, puntos = encontrar_centro_bounding_box_y_nube(
                     puntos_lidar, [x_min, y_min, x_max, y_max], P2, R0_rect, Tr_velo_to_cam
                 )
-                print(f"clase= {clase}, id= {contador}, X= {centro_3d[0]}, Y= {centro_3d[1]}, Z={centro_3d[2]} ")
+                if info: print(f"clase= {clase}, id= {contador}, X= {centro_3d[0]}, Y= {centro_3d[1]}, Z={centro_3d[2]} ")
+
+                if centro_3d is None or puntos is None:
+                    if info: print(f"No se encontraron puntos para el bounding box de la clase {clase}. Saltando a la siguiente iteración.")
+                    continue
 
                 if centro_3d is not None:
                     # Proyectar el centro 3D a la imagen 2D
@@ -449,7 +523,7 @@ def inferencia(imagen, idImagen, ruta_label, ruta_lidar, ruta_diccionario, ruta_
                     puntos_cluster_cercano = cluster_mas_cercano(
                         puntos, centro_bb=(centro_3d[0], centro_3d[1]), eps=0.6, min_samples=5
                     )
-                    puntos_cluster_cercano=puntos
+                    #puntos_cluster_cercano=puntos
                     if len(puntos_cluster_cercano) > 0:
                         puntos_recortados = puntos_cluster_cercano
                         if len(puntos_recortados) > 0:
@@ -457,7 +531,7 @@ def inferencia(imagen, idImagen, ruta_label, ruta_lidar, ruta_diccionario, ruta_
                             todos_los_puntos.append(puntos_recortados)
                     
                     # Visualizar los puntos filtrados y recortados
-                    visualizar_puntos_3d(puntos_recortados, titulo=f"Clase: {clase} (id: {contador})")
+                    if info: visualizar_puntos_3d(puntos_recortados, titulo=f"Clase: {clase} (id: {contador})")
                     
                     # Asociar las estimaciones con las etiquetas
                     asociar_estimaciones_con_labels(centro_3d[0], centro_3d[1], centro_3d[2], etiquetas, contador, diccionario, idImagen, puntos_recortados)
@@ -465,18 +539,20 @@ def inferencia(imagen, idImagen, ruta_label, ruta_lidar, ruta_diccionario, ruta_
                 contador += 1
 
         # Guardar el diccionario actualizado en el archivo
-        with open(ruta_diccionario, 'wb') as file:
-            pickle.dump(diccionario, file)
+        #with open(ruta_diccionario, 'wb') as file:
+        #    pickle.dump(diccionario, file)
 
         # Mostrar la imagen con los bounding boxes y los centros proyectados
-        mostrar_imagen(imagen)
+        if info: mostrar_imagen(imagen)
 
     # Combinar todos los puntos en un único array
     todos_los_puntos = np.vstack(todos_los_puntos) if len(todos_los_puntos) > 0 else np.array([])
 
     # Visualizar todos los puntos en un único espacio 3D
-    visualizar_puntos_3d(todos_los_puntos, titulo="Todos los Objetos Detectados en el Espacio 3D")
-    visualizar_puntos_filtrados(todos_los_puntos)
+    if info: visualizar_puntos_3d(todos_los_puntos, titulo="Todos los Objetos Detectados en el Espacio 3D")
+    if info: visualizar_puntos_filtrados(todos_los_puntos)
+
+    return diccionario
 
 
 
